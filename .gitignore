@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.pyo
+data/
+run_input.txt
+.idea/
