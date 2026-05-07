@@ -46,11 +46,14 @@ class ContactRepository:
         return [Contact.from_dict(r) for r in matches]
 
     # ── Update ───────────────────────────────────────────────────────────────────
+    _PROTECTED_FIELDS = {"id", "created_at", "updated_at"}
+
     def update(self, contact_id: str, updates: dict) -> Optional[Contact]:
+        safe_updates = {k: v for k, v in updates.items() if k not in self._PROTECTED_FIELDS}
         records = self._load()
         for i, r in enumerate(records):
             if r["id"] == contact_id:
-                records[i] = jl.merge(r, updates)
+                records[i] = jl.merge(r, safe_updates)
                 records[i]["updated_at"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 self._save(records)
                 return Contact.from_dict(records[i])
